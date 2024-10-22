@@ -1,0 +1,1 @@
+=SE(A1 - B1 < 0; "-"&TEXTO(ABS(A1 - B1); "h:mm"); TEXTO(A1 - B1; "h:mm"))

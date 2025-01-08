@@ -1,0 +1,106 @@
+program CalcularPascoal_Datas_Catolicas;
+
+var
+  ano, a, b, c, d, e, f, g, h, i, k, l, m, dia, mes: integer;
+  carnavalDia, carnavalMes: integer;
+  sextaDia, sextaMes: integer;
+  corpusDia, corpusMes: integer;
+
+function DiaSemana(dia, mes, ano: integer): string;
+var
+  h, q, m: integer;
+  dias: array[0..6] of string = ('Sabado', 'Domingo', 'Segunda-feira', 'Terca-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira');
+begin
+  if mes < 3 then
+  begin
+    mes := mes + 12;
+    ano := ano - 1;
+  end;
+  q := ano div 100;
+  m := ano mod 100;
+  h := (dia + ((13 * (mes + 1)) div 5) + m + (m div 4) + (q div 4) - (2 * q)) mod 7;
+  DiaSemana := dias[h];
+end;
+
+begin
+  writeln('Entre com o ano:');
+  readln(ano);
+
+  { Etapas do algoritmo de Gauss para calcular a Páscoa }
+  a := ano mod 19;
+  b := ano div 100;
+  c := ano mod 100;
+  d := b div 4;
+  e := b mod 4;
+  f := (b + 8) div 25;
+  g := (b - f + 1) div 3;
+  h := (19 * a + b - d - g + 15) mod 30;
+  i := c div 4;
+  k := c mod 4;
+  l := (32 + 2 * e + 2 * i - h - k) mod 7;
+  m := (a + 11 * h + 22 * l) div 451;
+
+  { Cálculo do mês e do dia da Páscoa }
+  mes := (h + l - 7 * m + 114) div 31;
+  dia := ((h + l - 7 * m + 114) mod 31) + 1;
+
+  { Cálculo do Carnaval - 47 dias antes da Páscoa }
+  carnavalDia := dia - 47;
+  carnavalMes := mes;
+  while carnavalDia <= 0 do
+  begin
+    carnavalMes := carnavalMes - 1;
+    if carnavalMes = 3 then
+      carnavalDia := carnavalDia + 31
+    else if carnavalMes = 2 then
+      if ((ano mod 4 = 0) and (ano mod 100 <> 0)) or (ano mod 400 = 0) then
+        carnavalDia := carnavalDia + 29
+      else
+        carnavalDia := carnavalDia + 28
+    else
+      carnavalDia := carnavalDia + 31;
+  end;
+
+  { Cálculo da Sexta-feira da Paixão - 2 dias antes da Páscoa }
+  sextaDia := dia - 2;
+  sextaMes := mes;
+  if sextaDia <= 0 then
+  begin
+    sextaMes := sextaMes - 1;
+    if sextaMes = 3 then
+      sextaDia := sextaDia + 31
+    else if sextaMes = 2 then
+      if ((ano mod 4 = 0) and (ano mod 100 <> 0)) or (ano mod 400 = 0) then
+        sextaDia := sextaDia + 29
+      else
+        sextaDia := sextaDia + 28
+    else
+      sextaDia := sextaDia + 31;
+  end;
+
+  { Cálculo de Corpus Christi - 60 dias após a Páscoa }
+  corpusDia := dia + 60;
+  corpusMes := mes;
+  while corpusDia > 31 do
+  begin
+    if (corpusMes = 1) or (corpusMes = 3) or (corpusMes = 5) or (corpusMes = 7) or (corpusMes = 8) or (corpusMes = 10) or (corpusMes = 12) then
+      corpusDia := corpusDia - 31
+    else if (corpusMes = 4) or (corpusMes = 6) or (corpusMes = 9) or (corpusMes = 11) then
+      corpusDia := corpusDia - 30
+    else if (corpusMes = 2) then
+    begin
+      if ((ano mod 4 = 0) and (ano mod 100 <> 0)) or (ano mod 400 = 0) then
+        corpusDia := corpusDia - 29
+      else
+        corpusDia := corpusDia - 28;
+    end;
+    corpusMes := corpusMes + 1;
+  end;
+
+  { Exibir o resultado final }
+  writeln('A Pascoa no ano de ', ano, ' sera em: ', dia, '/', mes, ' - ', DiaSemana(dia, mes, ano));
+  writeln('O Carnaval no ano de ', ano, ' sera em: ', carnavalDia, '/', carnavalMes, ' - ', DiaSemana(carnavalDia, carnavalMes, ano));
+  writeln('A Sexta-feira da Paixao no ano de ', ano, ' sera em: ', sextaDia, '/', sextaMes, ' - ', DiaSemana(sextaDia, sextaMes, ano));
+  writeln('O Corpus Christi no ano de ', ano, ' sera em: ', corpusDia, '/', corpusMes, ' - ', DiaSemana(corpusDia, corpusMes, ano));
+  readln;
+end.
